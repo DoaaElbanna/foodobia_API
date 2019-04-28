@@ -19,5 +19,32 @@ from api.user import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', views.LoginApiView.as_view(), name="login"),
+    path('login', views.LoginApiView.as_view(), name="login"),
+    path('check_user', views.CheckUserName.as_view(), name="check_user"),
+    path('signup', views.SignUpApiView.as_view(), name="signup"),
+    path('list-categories', views.ListCategories.as_view(), name="list_categories"),
+    path('add-category', views.AddCategories.as_view(), name="add_category")
 ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from api.models import users
+from api.models import FoodCategroies
 from django.db.models import Q
 from rest_framework.serializers import (
     CharField,
@@ -11,11 +11,11 @@ from rest_framework.serializers import (
     )
 
 
-class UserLoginSerializer(ModelSerializer):
+class FoodCategorySerializer(ModelSerializer):
     class Meta:
-        model = users
+        model = FoodCategroies
         fields = [
-            "user_name",
-            "user_pass"
+            "categ_id",
+            "categ_name",
         ]
 
