@@ -3,7 +3,7 @@ from api.models import users, FoodCategroies
 from rest_framework.response import Response
 from rest_framework import generics
 from .serializers import FoodCategorySerializer
-from django.core.mail import send_email
+from django.core.mail import send_mail
 from django.conf import  settings
 from django.contrib.auth.models import User
 
@@ -25,36 +25,25 @@ class LoginApiView(APIView):
         return Response(res)
 
 
-
-
 class ResetPasswordView(APIView):
 
     def post(self,request,*args,**kwargs):
         data = request.data
         username = data["username"]
-        usr_email = list(data["email"]) # user@gmail.com
+        usr_email = list(data["email"] ) # user@gmail.com
         password = User.objects.make_random_password()
        # user= users.set_password(password)
 
-        user=users.objects.filter(user_pass=username).updata(user_pass=password)
+        user = users.objects.filter(user_name=username).update(user_pass=password)
         subject='Foodobia password recover'
         message = "This is your new password: " + password
-        email_from = settings.Email_Host_user
+        email_from = settings.Email_Host_USER
         #to_list=[settings.EMAIL_HOST_USER]
-        email_res = send_email(subject, message, email_from, usr_email, fail_silently=True)
+        email_res = send_mail(subject, message, email_from, usr_email, fail_silently=True)
         if(email_res):
             return Response({"msg": 1})
         else:
             return Response({"msg": 0})
-
-
-
-
-
-
-
-
-
 
 
 class CheckUserName(APIView):
@@ -69,7 +58,7 @@ class CheckUserName(APIView):
         else:
             user_object = 0  # this user not exist
 
-        res = {"valid": user_object}
+        res = {"exist": user_object}
         return Response(res)
 
 
@@ -87,7 +76,6 @@ class SignUpApiView(APIView):
         phone_number = data["phoneNumber"]
         length = data["length"]
         weight = data["weight"]
-        activity_level = data['activityLevel']
         is_diabetic = data["isDiabetic"]
 
         new_user = users(
@@ -102,7 +90,6 @@ class SignUpApiView(APIView):
             user_length=length,
             user_weight=weight,
             is_diabetic=is_diabetic,
-            user_activitylevel=activity_level
         )
         new_user.save()
         res = {"created": 1}

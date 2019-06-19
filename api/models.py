@@ -17,24 +17,23 @@ class users(models.Model):
     gmail_id = models.BigIntegerField(db_column='gmail-id', blank=True, null=True)
     user_name = models.CharField(db_column='user-name', unique=True, max_length=45, blank=True, null=True)
     user_firstname = models.CharField(db_column='user-firstname', max_length=45, blank=True, null=True)
-    user_lastname = models.CharField(db_column='user-lastname', max_length=45, blank=True, null=True)
-    user_image = models.TextField(db_column='user-image', blank=True, null=True)
-    user_pass = models.CharField(db_column='user-pass', max_length=255)
-    user_email = models.CharField(db_column='user-email', max_length=45, blank=True, null=True)
-    user_birthdate = models.DateField(db_column='user-birthdate', blank=True, null=True)
-    user_phone = models.IntegerField(db_column='user-phone', blank=True, null=True)
-    user_gender = models.IntegerField(db_column='user-gender', blank=True, null=True)
-    user_length = models.IntegerField(db_column='user-length', blank=True, null=True)
-    user_weight = models.CharField(db_column='user-weight', max_length=45, blank=True, null=True)
-    user_activitylevel = models.IntegerField(db_column='user-activitylevel', blank=True, null=True)
-    is_diabetic = models.IntegerField(db_column='is-diabetic', blank=True, null=True)
-    fav_category = models.TextField(db_column='fav-category', blank=True, null=True)
-    saved_meals = models.TextField(db_column='saved-meals', blank=True, null=True)
+    user_lastname = models.CharField(db_column='user-lastname', max_length=45, blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    user_image = models.TextField(db_column='user-image', blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    user_pass = models.CharField(db_column='user-pass', max_length=255)  # Field renamed to remove unsuitable characters.
+    user_email = models.CharField(db_column='user-email', max_length=45, blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    user_birthdate = models.DateField(db_column='user-birthdate', blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    user_phone = models.IntegerField(db_column='user-phone', blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    user_gender = models.IntegerField(db_column='user-gender', blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    user_length = models.IntegerField(db_column='user-length', blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    user_weight = models.CharField(db_column='user-weight', max_length=45, blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    user_activitylevel = models.IntegerField(db_column='user-activitylevel', blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    is_diabetic = models.IntegerField(db_column='is-diabetic', blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    fav_category = models.TextField(db_column='fav-category', blank=True, null=True)  # Field renamed to remove unsuitable characters. This field type is a guess.
+    saved_meals = models.TextField(db_column='saved-meals', blank=True, null=True)  # Field renamed to remove unsuitable characters. This field type is a guess.
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'users'
-
 
 class Diseases(models.Model):
     disease_id = models.AutoField(db_column='disease-id', primary_key=True)  # Field renamed to remove unsuitable characters.
@@ -97,10 +96,11 @@ class Meals(models.Model):
     meal_potassium = models.FloatField(db_column='meal-potassium', blank=True, null=True)
     meal_rate = models.IntegerField(db_column='meal-rate', blank=True, null=True)
     meal_description = models.TextField(db_column='meal-description', blank=True, null=True)
-    users_user_id = models.ForeignKey('Users', models.DO_NOTHING, db_column='users_user-id')
+    users_user_id = models.ForeignKey(users, models.DO_NOTHING, db_column='users_user-id')
+    categ_id = models.ForeignKey(FoodCategroies, models.DO_NOTHING, db_column='categ-id')
 
     class Meta:
-        # managed = False
+        managed = False
         db_table = 'meals'
 
 

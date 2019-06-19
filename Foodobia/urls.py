@@ -16,14 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from api.user import views
+from api.meal import meal_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login', views.LoginApiView.as_view(), name="login"),
-    path('check_user', views.CheckUserName.as_view(), name="check_user"),
+    path('check-user', views.CheckUserName.as_view(), name="check_user"),
     path('signup', views.SignUpApiView.as_view(), name="signup"),
+    path('reset-pass', views.ResetPasswordView.as_view(), name="reset_pass"),
     path('list-categories', views.ListCategories.as_view(), name="list_categories"),
-    path('add-category', views.AddCategories.as_view(), name="add_category")
+    path('add-category', views.AddCategories.as_view(), name="add_category"),
+    path('get-meal', meal_views.GetMealApi.as_view(), name="get_meal")
+
 ]
 
 
