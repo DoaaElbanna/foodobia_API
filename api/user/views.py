@@ -3,9 +3,9 @@ from api.models import users, FoodCategroies
 from rest_framework.response import Response
 from rest_framework import generics
 from .serializers import FoodCategorySerializer
-from django.core.mail import send_mail
-from django.conf import  settings
-from django.contrib.auth.models import User
+# from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.conf import settings
 
 
 class LoginApiView(APIView):
@@ -27,23 +27,22 @@ class LoginApiView(APIView):
 
 class ResetPasswordView(APIView):
 
-    def post(self,request,*args,**kwargs):
+    def post(self, request, *args, **kwargs):
         data = request.data
         username = data["username"]
-        usr_email = list(data["email"] ) # user@gmail.com
-        password = User.objects.make_random_password()
-       # user= users.set_password(password)
-
-        user = users.objects.filter(user_name=username).update(user_pass=password)
-        subject='Foodobia password recover'
-        message = "This is your new password: " + password
-        email_from = settings.Email_Host_USER
-        #to_list=[settings.EMAIL_HOST_USER]
-        email_res = send_mail(subject, message, email_from, usr_email, fail_silently=True)
-        if(email_res):
-            return Response({"msg": 1})
+        user = users.objects.filter(user_name=username).values()
+        user_email = user[0]['user_email']
+        user_password = user[0]['user_pass']
+        subject = 'Foodobia password recover'
+        message = "This is your password: " + user_password
+        email = EmailMessage(
+            subject, message, to=[user_email]
+        )
+        email_res = email.send()
+        if email_res:
+            return Response({"password_send": email_res})  # pass send
         else:
-            return Response({"msg": 0})
+            return Response({"password_send": email_res})  # pass not send
 
 
 class CheckUserName(APIView):

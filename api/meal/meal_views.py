@@ -26,15 +26,20 @@ def manual_filtering(meals):
                 arr.append(meal)
 
         for meal in arr:
-            if meal['meal_fats'] < 10:
+            if meal['meal_fats'] <= 10:
                 good_arr.append(meal)
 
         return good_arr
 
 
 def data_splitter(arr):
-    splitted = np.split(arr, 2)
-    return splitted[0], splitted[1]
+    if len(arr) % 2 == 0:
+        splitted = np.split(arr, 2)
+        return splitted[0], splitted[1]
+    else:
+        middle_index = int(len(arr) / 2)
+        splitted = np.split(arr, [middle_index])
+        return splitted[0], splitted[1]
 
     # if len(arr) > 1:
     #     middle_index = int(len(arr) / 2)
@@ -55,6 +60,7 @@ class GetMealApi(APIView):
         username = data['username']
         user = users.objects.filter(user_name=username).values()
         user_category = tuple(eval(user[0]['fav_category']))  # return list
+        user_is_diabetic = user[0]['is_diabetic']
         queryset = np.array(Meals.objects.filter(categ_id__in=user_category).values())
         arr1, arr2 = data_splitter(queryset)
 
@@ -70,9 +76,12 @@ class GetMealApi(APIView):
         if len(arr2) > 0:
             manual_result = manual_filtering(arr2)
 
-        # return Response(list(manual_result) + list(classified_healthy_result))
+        if user_is_diabetic == 1:
+            return Response(manual_filtering(queryset))
+            # return Response(list(manual_result) + list(classified_healthy_result))
 
-        return Response(queryset )
+        else:
+            return Response(queryset)
 
 
 class AddNewMealApi(APIView):
@@ -85,11 +94,3 @@ class AddNewMealApi(APIView):
         categ_id = data['categ_id']
         user = users.objects.filter(user_name=username)
         pass
-
-
-
-
-
-
-
-

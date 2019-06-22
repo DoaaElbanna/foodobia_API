@@ -13,13 +13,12 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 #gmail_message
-
+EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'aminaelknani@gmail.com'
+EMAIL_HOST_USER = 'foodobiamail@gmail.com'
 EMAIL_HOST_PASSWORD = '777###@@@'
-EMAIL_PORT=587
+EMAIL_PORT = 587
 #EMAIL_PORT = EMAIL_PORT
-EMAIL_USE_TLS= True
 
 
 import os
@@ -37,7 +36,7 @@ SECRET_KEY = 'g=jj%x6dw^!#b588u0%e2^q8w90pid0nwtdluv3u=dm%8)kdb&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'ac10ee06.ngrok.io']
 
 
 # Application definition
