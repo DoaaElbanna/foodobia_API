@@ -6,6 +6,7 @@ from .serializers import FoodCategorySerializer
 # from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from django.conf import settings
+import json
 
 
 class LoginApiView(APIView):
@@ -109,3 +110,25 @@ class AddCategories(APIView):
         user = users.objects.filter(user_name=username).update(fav_category=categories_list)
         res = {"updated": 1}
         return Response(res)
+
+
+class ProfileApi(APIView):
+
+    def post(self, request):
+        data = request.data
+        username = data["username"]
+        user = users.objects.filter(user_name=username).values()
+        username = user[0]['user_name']
+        firstname = user[0]['user_firstname']
+        lastname = user[0]['user_lastname']
+        # image = user[0]['user_image']
+        email = user[0]['user_email']
+        length = user[0]['user_length']
+        weight = user[0]['user_weight']
+        saved_meal = user[0]['saved_meals']
+        fav_category = user[0]['fav_category']
+
+        user_profile = [{"username":username, "firstname": firstname,"lastname":lastname,
+                         "email": email, "length": length, "weight": weight, "saved+meal": saved_meal, "fav_category": fav_category}]
+
+        return Response(user_profile)

@@ -25,15 +25,16 @@ class users(models.Model):
     user_phone = models.IntegerField(db_column='user-phone', blank=True, null=True)  # Field renamed to remove unsuitable characters.
     user_gender = models.IntegerField(db_column='user-gender', blank=True, null=True)  # Field renamed to remove unsuitable characters.
     user_length = models.IntegerField(db_column='user-length', blank=True, null=True)  # Field renamed to remove unsuitable characters.
-    user_weight = models.CharField(db_column='user-weight', max_length=45, blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    user_weight = models.IntegerField(db_column='user-weight', blank=True, null=True)   # Field renamed to remove unsuitable characters.
     user_activitylevel = models.IntegerField(db_column='user-activitylevel', blank=True, null=True)  # Field renamed to remove unsuitable characters.
     is_diabetic = models.IntegerField(db_column='is-diabetic', blank=True, null=True)  # Field renamed to remove unsuitable characters.
     fav_category = models.TextField(db_column='fav-category', blank=True, null=True)  # Field renamed to remove unsuitable characters. This field type is a guess.
     saved_meals = models.TextField(db_column='saved-meals', blank=True, null=True)  # Field renamed to remove unsuitable characters. This field type is a guess.
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'users'
+
 
 class Diseases(models.Model):
     disease_id = models.AutoField(db_column='disease-id', primary_key=True)  # Field renamed to remove unsuitable characters.
@@ -82,6 +83,16 @@ class Ingrediants(models.Model):
 #         unique_together = (('ingrediants_ingrediants_id', 'diseases_id_diseases'),)
 
 
+class IngredientsCategories(models.Model):
+    categ_id = models.AutoField(primary_key=True)
+    categ_name = models.CharField(max_length=45, blank=True, null=True)
+    sub_categ = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ingredients_categories'
+
+
 class Meals(models.Model):
     meal_id = models.AutoField(db_column='meal-id', primary_key=True)
     meal_name = models.CharField(db_column='meal-name', unique=True, max_length=45, blank=True, null=True)
@@ -96,11 +107,11 @@ class Meals(models.Model):
     meal_potassium = models.FloatField(db_column='meal-potassium', blank=True, null=True)
     meal_rate = models.IntegerField(db_column='meal-rate', blank=True, null=True)
     meal_description = models.TextField(db_column='meal-description', blank=True, null=True)
-    users_user_id = models.ForeignKey(users, models.DO_NOTHING, db_column='users_user-id')
-    categ_id = models.ForeignKey(FoodCategroies, models.DO_NOTHING, db_column='categ-id')
+    user = models.ForeignKey('users', models.DO_NOTHING, db_column='users_user-id')  # user_id
+    categ_id = models.ForeignKey('FoodCategroies', models.DO_NOTHING, db_column='categ-id', null=True)  # categ_id
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'meals'
 
 

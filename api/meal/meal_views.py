@@ -1,11 +1,12 @@
-from api.models import Meals
-from api.models import users, Meals
+from api.models import users, Meals, IngredientsCategories, Ingrediants
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 from django.db import connection, transaction
 from api.classifier.classifier import predict_diabetes
 import numpy as np
+import json
+
 
 cursor = connection.cursor()
 
@@ -55,11 +56,11 @@ def data_splitter(arr):
 
 class GetMealApi(APIView):
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         data = request.data
         username = data['username']
         user = users.objects.filter(user_name=username).values()
-        user_category = tuple(eval(user[0]['fav_category']))  # return list
+        user_category = tuple(eval(user[0]['fav_category']))
         user_is_diabetic = user[0]['is_diabetic']
         queryset = np.array(Meals.objects.filter(categ_id__in=user_category).values())
         arr1, arr2 = data_splitter(queryset)
@@ -84,13 +85,58 @@ class GetMealApi(APIView):
             return Response(queryset)
 
 
+class ListCategoriesApi(APIView):
+
+    def get(self, request, *args, **kwargs):
+
+        list_categories = IngredientsCategories.objects.all().values()
+
+        final_res = []
+        for cat in list_categories:
+            sub_categories = np.array(Ingrediants.objects.filter(ingrediant_id__in=tuple(eval(cat['sub_categ']))))
+            final_res.append({"categ_name": cat['categ_name'], "sub_categ":  sub_categories})
+
+        return Response(final_res)
+
+
 class AddNewMealApi(APIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
         username = data['username']
-        meal_name = data['meal_name']
-        meal_ingrediants = data['meal_ingrediants']
         categ_id = data['categ_id']
-        user = users.objects.filter(user_name=username)
-        pass
+        meal_name = data['meal_name']
+        meal_img = data['meal_image']
+        meal_ingredients = data['meal_ingredients']
+        meal_calories = data['meal_calories']
+        meal_carbs = data['meal_carbs']
+        meal_fats = data['meal_fats']
+        meal_protein = data['meal_protein']
+        meal_sugar = data['meal_sugar']
+        meal_sodium = data['meal_sodium']
+        meal_potassium = data['meal_potassium']
+        user = users.objects.filter(user_name=username).values()
+        user_id = user[0]['user_id']
+        # meals_list = list(user[0]['saved_meals'])
+
+        new_meal = Meals(
+            meal_name=meal_name,
+            meal_image=meal_img,
+            meal_ingrediants=meal_ingredients,
+            meal_calories=meal_calories,
+            meal_carbs=meal_carbs,
+            meal_fats=meal_fats,
+            meal_protein=meal_protein,
+            meal_sugar=meal_sugar,
+            meal_sodium=meal_sodium,
+            meal_potassium=meal_potassium,
+            user=user_id,
+            categ=categ_id
+        )
+        # meals_list.append(new_meal.meal_id)
+        # user.update(saved_meals=meals_list)
+        return Response({"meal_created": 1})
+
+
+
+

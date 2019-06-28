@@ -25,6 +25,8 @@ urlpatterns = [
     path('signup', views.SignUpApiView.as_view(), name="signup"),
     path('reset-pass', views.ResetPasswordView.as_view(), name="reset_pass"),
     path('list-categories', views.ListCategories.as_view(), name="list_categories"),
+    path('choose-categories', meal_views.ListCategoriesApi.as_view(), name="choose_categories"),
+    path('user-profile', views.ProfileApi.as_view(), name="list_categories"),
     path('add-category', views.AddCategories.as_view(), name="add_category"),
     path('get-meal', meal_views.GetMealApi.as_view(), name="get_meal")
 
