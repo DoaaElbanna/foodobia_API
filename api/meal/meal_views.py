@@ -1,4 +1,4 @@
-from api.models import users, Meals, IngredientsCategories, Ingrediants
+from api.models import users, Meals, IngredientsCategories, Ingrediants, FoodCategroies
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
@@ -6,6 +6,7 @@ from django.db import connection, transaction
 from api.classifier.classifier import predict_diabetes
 import numpy as np
 import json
+import random
 
 
 cursor = connection.cursor()
@@ -93,7 +94,7 @@ class ListCategoriesApi(APIView):
 
         final_res = []
         for cat in list_categories:
-            sub_categories = np.array(Ingrediants.objects.filter(ingrediant_id__in=tuple(eval(cat['sub_categ']))))
+            sub_categories = Ingrediants.objects.filter(ingrediant_id__in=tuple(eval(cat['sub_categ']))).values()
             final_res.append({"categ_name": cat['categ_name'], "sub_categ":  sub_categories})
 
         return Response(final_res)
@@ -104,7 +105,7 @@ class AddNewMealApi(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data
         username = data['username']
-        categ_id = data['categ_id']
+        categ_id = random.randint(0, 11)
         meal_name = data['meal_name']
         meal_img = data['meal_image']
         meal_ingredients = data['meal_ingredients']
@@ -115,14 +116,14 @@ class AddNewMealApi(APIView):
         meal_sugar = data['meal_sugar']
         meal_sodium = data['meal_sodium']
         meal_potassium = data['meal_potassium']
-        user = users.objects.filter(user_name=username).values()
-        user_id = user[0]['user_id']
-        # meals_list = list(user[0]['saved_meals'])
+        user = users.objects.get(user_name=username)
+        categ_obj = FoodCategroies.objects.get(categ_id=categ_id)
+        # user_id = user[0]['user_id']
 
         new_meal = Meals(
             meal_name=meal_name,
             meal_image=meal_img,
-            meal_ingrediants=meal_ingredients,
+            meal_ingrediants=json.dumps(meal_ingredients),
             meal_calories=meal_calories,
             meal_carbs=meal_carbs,
             meal_fats=meal_fats,
@@ -130,12 +131,43 @@ class AddNewMealApi(APIView):
             meal_sugar=meal_sugar,
             meal_sodium=meal_sodium,
             meal_potassium=meal_potassium,
-            user=user_id,
-            categ=categ_id
+            user_id=user,
+            categ_id=categ_obj
         )
-        # meals_list.append(new_meal.meal_id)
-        # user.update(saved_meals=meals_list)
+        new_meal.save()
         return Response({"meal_created": 1})
+
+
+class SavedMealsApi(APIView):
+
+    def post(self, requset, *args, **kwargs):
+        data = requset.data
+        username = data["username"]
+        user = users.objects.filter(user_name=username).values()
+        user_id = user[0]['user_id']
+        user_meals = Meals.objects.filter(user_id=user_id).values()
+
+        return Response(user_meals)
+
+
+class GetIngredientsApi(APIView):
+
+    def get(self, request, *args, **kwargs):
+        ingredients = Ingrediants.objects.all().values()
+        ingredients_list = []
+
+        for ingred in ingredients:
+            ingredients_list.append({"ingredientt_id": ingred['ingrediant_id'],
+                                     "ingredient_name": ingred['ingrediant_name']})
+
+        return Response(ingredients_list)
+
+
+
+
+
+
+
 
 
 

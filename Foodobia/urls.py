@@ -26,9 +26,12 @@ urlpatterns = [
     path('reset-pass', views.ResetPasswordView.as_view(), name="reset_pass"),
     path('list-categories', views.ListCategories.as_view(), name="list_categories"),
     path('choose-categories', meal_views.ListCategoriesApi.as_view(), name="choose_categories"),
-    path('user-profile', views.ProfileApi.as_view(), name="list_categories"),
+    path('user-profile', views.ProfileApi.as_view(), name="user_profile"),
     path('add-category', views.AddCategories.as_view(), name="add_category"),
-    path('get-meal', meal_views.GetMealApi.as_view(), name="get_meal")
+    path('get-meal', meal_views.GetMealApi.as_view(), name="get_meal"),
+    path('add-meal', meal_views.AddNewMealApi.as_view(), name="add_meal"),
+    path('saved-meals', meal_views.SavedMealsApi.as_view(), name="saved_meals"),
+    path('get-ingredients', meal_views.GetIngredientsApi.as_view(), name="saved_meals"),
 
 ]
 

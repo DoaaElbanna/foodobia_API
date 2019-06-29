@@ -127,8 +127,14 @@ class ProfileApi(APIView):
         weight = user[0]['user_weight']
         saved_meal = user[0]['saved_meals']
         fav_category = user[0]['fav_category']
+        categories_list = FoodCategroies.objects.filter(categ_id__in=tuple(eval(fav_category))).values()
+        categories_name = []
 
-        user_profile = [{"username":username, "firstname": firstname,"lastname":lastname,
-                         "email": email, "length": length, "weight": weight, "saved+meal": saved_meal, "fav_category": fav_category}]
+        for cat in categories_list:
+            categories_name.append(cat['categ_name'])
+
+        user_profile = [{"username":username, "firstname": firstname, "lastname": lastname,
+                         "email": email, "length": length, "weight": weight, "saved+meal": saved_meal,
+                         "fav_category": categories_name}]
 
         return Response(user_profile)

@@ -107,7 +107,7 @@ class Meals(models.Model):
     meal_potassium = models.FloatField(db_column='meal-potassium', blank=True, null=True)
     meal_rate = models.IntegerField(db_column='meal-rate', blank=True, null=True)
     meal_description = models.TextField(db_column='meal-description', blank=True, null=True)
-    user = models.ForeignKey('users', models.DO_NOTHING, db_column='users_user-id')  # user_id
+    user_id = models.ForeignKey('users', models.DO_NOTHING, db_column='users_user-id')  # user_id
     categ_id = models.ForeignKey('FoodCategroies', models.DO_NOTHING, db_column='categ-id', null=True)  # categ_id
 
     class Meta:
